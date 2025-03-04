@@ -1,0 +1,124 @@
+import Foundation
+
+public class KGLTFLoader {
+    public init() {
+        
+    }
+    
+    public func loadGLTF(resource: String) throws -> KGLTFFile {
+        if resource.hasSuffix("gltf") {
+            return try loadJSON(resource: resource)
+        } else if resource.hasSuffix("glb") {
+            return try loadBinary(resource: resource)
+        } else {
+            throw KGLTFError.filenameNotSupported(resource)
+        }
+    }
+
+    private func loadJSON(resource: String) throws -> KGLTFFile {
+        let gltfPath = Bundle.main.path(forResource: resource, ofType: nil)!
+        let gltfJson = try String(contentsOfFile: gltfPath, encoding: String.Encoding.utf8)
+        let gltfRaw = try JSONDecoder().decode(KRawGLTFFile.self, from: gltfJson.data(using: .utf8)!)
+        return try mapGLTF(gltfRaw)
+    }
+
+    private func loadBinary(resource: String) throws -> KGLTFFile {
+        guard let gltfPath = Bundle.main.url(
+            forResource: resource, 
+            withExtension: nil
+        ) else {
+            throw KGLTFError.fileNotFound(resource)
+        }
+        let gltfData: Data
+        do {
+            gltfData = try Data(contentsOf: gltfPath)
+        } catch {
+            throw KGLTFError.fileNotReadable("Unable to read file due to \(error.localizedDescription)")
+        }
+
+        var magic: UInt32 = 0
+        var version: UInt32 = 0
+        var length: UInt32 = 0
+
+        try! gltfData[0..<12].withUnsafeBytes<UInt32> { bytes in
+            magic = bytes[0..<4].load(as: UInt32.self)
+            version = bytes[4..<8].load(as: UInt32.self)
+            length = bytes[8..<12].load(as: UInt32.self)
+        }
+
+        let expectedMagic: UInt32 = 0x46546C67
+
+        print("magic: \(magic), expected: \(expectedMagic)")
+        print("version: \(version)")
+        print("length: \(length)")
+
+        var currentOffset: UInt32 = 12
+        var gltfRaw: KRawGLTFFile!
+        var binData: [UInt8]?
+
+        while currentOffset < length {
+            var chunkSize: UInt32 = 0
+            var chunkType: KGLTFBinChunkType!
+
+            gltfData[currentOffset..<(currentOffset + 8)].withUnsafeBytes { bytes in
+                chunkSize = bytes[0..<4].load(as: UInt32.self)
+                chunkType = KGLTFBinChunkType(rawValue: bytes[4..<8].load(as: UInt32.self))!
+            }
+
+            if chunkType == .json {
+                let jsonString = gltfData[(currentOffset + 8)..<(currentOffset + 8 + chunkSize)].withUnsafeBytes { bytes in
+                    String(bytes: bytes, encoding: .utf8)
+                }
+                gltfRaw = try! JSONDecoder().decode(KRawGLTFFile.self, from: jsonString!.data(using: .utf8)!)
+            } else if chunkType == .bin {
+                var outData = [UInt8]()
+                outData.append(contentsOf: gltfData[(currentOffset + 8)..<(currentOffset + 8 + chunkSize)])
+                binData = outData
+            }
+
+            currentOffset += 8 + chunkSize
+        }
+
+        return try mapGLTF(gltfRaw, binData: binData)
+    }
+
+    private func mapGLTF(_ raw: KRawGLTFFile, binData: [UInt8]? = nil) throws -> KGLTFFile {
+        let buffers = try mapBuffers(raw.buffers, binData: binData)
+        let bufferViews = mapBufferViews(raw.bufferViews, buffers: buffers)
+        let accessors = mapAccessors(raw.accessors, bufferViews: bufferViews)
+        let samplers = mapSamplers(raw.samplers)
+        let images = mapImages(raw.images, bufferViews: bufferViews)
+        let textures = mapTextures(raw.textures, samplers: samplers, images: images)
+        let materials = mapMaterials(raw.materials, textures: textures)
+        let meshes = try mapMeshes(raw.meshes, accessors: accessors, materials: materials)
+        let nodes = try mapNodes(raw.nodes, meshes: meshes)
+        let scenes = mapScenes(raw.scenes, nodes: nodes)
+        var skins: [KGLTFSkin] = []
+        if let rawSkins = raw.skins {
+            skins = mapSkins(rawSkins, accessors: accessors, nodes: nodes)
+        }
+        var animations: [KGLTFAnimation] = []
+        if let rawAnimations = raw.animations {
+            animations = mapAnimations(rawAnimations, accessors: accessors, nodes: nodes)
+        }
+
+        updateNodesWithSkin(nodes: nodes, rawNodes: raw.nodes, skins: skins)
+        
+        return KGLTFFile(
+            asset: mapAsset(raw.asset),
+            buffers: buffers,
+            bufferViews: bufferViews,
+            accessors: accessors,
+            nodes: nodes,
+            scenes: scenes,
+            scene: scenes[raw.scene],
+            samplers: samplers,
+            images: images,
+            textures: textures,
+            materials: materials,
+            skins: skins,
+            meshes: meshes,
+            animations: animations
+        )
+    }
+}
