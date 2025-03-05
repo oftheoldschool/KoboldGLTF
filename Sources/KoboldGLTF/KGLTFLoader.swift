@@ -48,9 +48,9 @@ public class KGLTFLoader {
 
         let expectedMagic: UInt32 = 0x46546C67
 
-        print("magic: \(magic), expected: \(expectedMagic)")
-        print("version: \(version)")
-        print("length: \(length)")
+        if expectedMagic != magic {
+            throw KGLTFError.fileHeaderInvalid("Version: \(version), Length: \(length), Expected magic: \(String(expectedMagic, radix: 16)), Actual magic: \(String(magic, radix: 16))")
+        }
 
         var currentOffset: UInt32 = 12
         var gltfRaw: KRawGLTFFile!

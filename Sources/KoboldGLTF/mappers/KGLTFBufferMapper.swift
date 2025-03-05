@@ -21,11 +21,8 @@ func mapBuffer(_ raw: KRawGLTFBuffer, binData: [UInt8]?) throws -> KGLTFBuffer {
             let encodedDataStart = uri.index(after: encodingEnd)
             let encodedData: String = String(uri[encodedDataStart...])
             
-            print("mime type: \(mimeType), encoding: \(encoding)")
-            
             if encoding == "base64" {
                 if let data = Data(base64Encoded: encodedData) {
-                    print("base64 encoded buffer found with actual size \(data.count) and expected size \(byteLength)")
                     if data.count != byteLength {
                         throw KGLTFError.bufferURIDataLengthMismatch("base64 encoded buffer found with actual size \(data.count) and expected size \(byteLength)")
                     }

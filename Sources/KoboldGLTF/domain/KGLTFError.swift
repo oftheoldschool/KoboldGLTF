@@ -2,6 +2,7 @@ public enum KGLTFError: Error {
     case filenameNotSupported(String)
     case fileNotFound(String)
     case fileNotReadable(String)
+    case fileHeaderInvalid(String)
     case bufferDataUnknown(String)
     case bufferURIDataInvalid(String)
     case bufferURIDataUnsupported(String)

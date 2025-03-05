@@ -37,8 +37,6 @@ public extension KGLTFAccessorCommon {
         case .mat4: componentCount = 16
         }
         
-        print("converting accessor data of type \(type) and expected data size \(Self.sizeBytes) and actual data size \(bufferView.byteLength / count / componentCount) to data \(T.self) with size \(MemoryLayout<T>.size)")
-        
         return accessorData.withUnsafeBytes { (castArray: UnsafeRawBufferPointer) in
             stride(from: 0, to: count * componentCount, by: componentCount).map { groupOffset in
                 (0..<componentCount).map { componentOffset in
