@@ -2,9 +2,9 @@ import Foundation
 
 public class KGLTFLoader {
     public init() {
-        
+
     }
-    
+
     public func loadGLTF(resource: String) throws -> KGLTFFile {
         if resource.hasSuffix("gltf") {
             return try loadJSON(resource: resource)
@@ -24,7 +24,7 @@ public class KGLTFLoader {
 
     private func loadBinary(resource: String) throws -> KGLTFFile {
         guard let gltfPath = Bundle.main.url(
-            forResource: resource, 
+            forResource: resource,
             withExtension: nil
         ) else {
             throw KGLTFError.fileNotFound(resource)
@@ -40,10 +40,10 @@ public class KGLTFLoader {
         var version: UInt32 = 0
         var length: UInt32 = 0
 
-        try! gltfData[0..<12].withUnsafeBytes<UInt32> { bytes in
-            magic = bytes[0..<4].load(as: UInt32.self)
-            version = bytes[4..<8].load(as: UInt32.self)
-            length = bytes[8..<12].load(as: UInt32.self)
+        gltfData[0..<12].withUnsafeBytes { bytes in
+            magic = bytes.load(fromByteOffset: 0, as: UInt32.self)
+            version = bytes.load(fromByteOffset: 4, as: UInt32.self)
+            length = bytes.load(fromByteOffset: 8, as: UInt32.self)
         }
 
         let expectedMagic: UInt32 = 0x46546C67
@@ -103,7 +103,7 @@ public class KGLTFLoader {
         }
 
         updateNodesWithSkin(nodes: nodes, rawNodes: raw.nodes, skins: skins)
-        
+
         return KGLTFFile(
             asset: mapAsset(raw.asset),
             buffers: buffers,

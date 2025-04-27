@@ -12,7 +12,7 @@ func mapBuffer(_ raw: KRawGLTFBuffer, binData: [UInt8]?) throws -> KGLTFBuffer {
         if uri.starts(with: "data:") {
             let mimeTypeStart = uri.index(after: uri.firstIndex(of: ":")!)
             let mimeTypeEnd = uri.firstIndex(of: ";")!
-            let mimeType = uri[mimeTypeStart ..< mimeTypeEnd]
+            let _ = uri[mimeTypeStart ..< mimeTypeEnd]
             
             let encodingStart = uri.index(after: mimeTypeEnd)
             let encodingEnd = uri.firstIndex(of: ",")!
