@@ -1,8 +1,8 @@
 func mapMeshes(
-    _ raw: [KRawGLTFMesh],
-    accessors: [KGLTFAccessor],
-    materials: [KGLTFMaterial]
-) throws -> [KGLTFMesh] {
+    _ raw: [Mesh],
+    accessors: [KGAccessor],
+    materials: [KGMaterial]
+) throws -> [KGMesh] {
     return try raw.map { 
         try mapMesh(
             $0,
@@ -12,11 +12,11 @@ func mapMeshes(
 }
 
 func mapMesh(
-    _ raw: KRawGLTFMesh,
-    accessors: [KGLTFAccessor],
-    materials: [KGLTFMaterial]
-) throws -> KGLTFMesh {
-    return KGLTFMesh(
+    _ raw: Mesh,
+    accessors: [KGAccessor],
+    materials: [KGMaterial]
+) throws -> KGMesh {
+    return KGMesh(
         name: raw.name, 
         primitives: try mapPrimitives(
             raw.primitives, 
@@ -25,12 +25,12 @@ func mapMesh(
 }
 
 func mapPrimitives(
-    _ raw: [KRawGLTFMeshPrimitive],
-    accessors: [KGLTFAccessor],
-    materials: [KGLTFMaterial]
-) throws -> [KGLTFMesh.KGLTFMeshPrimitive] {
+    _ raw: [MeshPrimitive],
+    accessors: [KGAccessor],
+    materials: [KGMaterial]
+) throws -> [KGMesh.KGMeshPrimitive] {
     return try raw.map { 
-        KGLTFMesh.KGLTFMeshPrimitive(
+        KGMesh.KGMeshPrimitive(
             indices: accessors[$0.indices], 
             material: materials[$0.material], 
             attributes: try mapPrimitiveAttributes(
@@ -41,8 +41,8 @@ func mapPrimitives(
 
 func mapPrimitiveAttributes(
     _ raw: [String: Int],
-    accessors: [KGLTFAccessor]
-) throws -> [KGLTFAttributeType: KGLTFAccessor] {
+    accessors: [KGAccessor]
+) throws -> [KGAttributeType: KGAccessor] {
     return Dictionary(
         uniqueKeysWithValues: 
             try raw.map { (k, v) in 
@@ -50,7 +50,7 @@ func mapPrimitiveAttributes(
             })
 } 
 
-func mapAttributeType(_ raw: String) throws -> KGLTFAttributeType {
+func mapAttributeType(_ raw: String) throws -> KGAttributeType {
     switch raw {
     case "POSITION": return .position
     case "NORMAL": return .normal
@@ -69,5 +69,5 @@ func mapAttributeType(_ raw: String) throws -> KGLTFAttributeType {
             }
         }
     }
-    throw KGLTFError.attributeTypeUnknown(raw)
+    throw KGError.attributeTypeUnknown(raw)
 }

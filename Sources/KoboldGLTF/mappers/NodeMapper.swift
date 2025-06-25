@@ -1,6 +1,6 @@
 import simd
 
-func mapNodes(_ raw: [KRawGLTFNode], meshes: [KGLTFMesh]) throws -> [KGLTFNode] {
+func mapNodes(_ raw: [Node], meshes: [KGMesh]) throws -> [KGNode] {
     let mappedNodes = try raw.enumerated().map { index, rawNode in
         try mapNode(rawNode, id: index, meshes: meshes)
     }
@@ -21,12 +21,12 @@ func mapNodes(_ raw: [KRawGLTFNode], meshes: [KGLTFMesh]) throws -> [KGLTFNode] 
     return nodes
 }
 
-func mapNode(_ raw: KRawGLTFNode, id: Int, meshes: [KGLTFMesh]) throws -> KGLTFNode {
-    var mesh: KGLTFMesh?
+func mapNode(_ raw: Node, id: Int, meshes: [KGMesh]) throws -> KGNode {
+    var mesh: KGMesh?
     if let meshIndex = raw.mesh {
         mesh = meshes[meshIndex]
     }
-    return KGLTFNode(
+    return KGNode(
         id: id,
         name: raw.name,
         mesh: mesh,
@@ -39,9 +39,9 @@ func mapNode(_ raw: KRawGLTFNode, id: Int, meshes: [KGLTFMesh]) throws -> KGLTFN
 }
 
 func updateNodesWithSkin(
-    nodes: [KGLTFNode], 
-    rawNodes: [KRawGLTFNode],
-    skins: [KGLTFSkin]
+    nodes: [KGNode], 
+    rawNodes: [Node],
+    skins: [KGSkin]
 ) {
     zip(nodes, rawNodes).forEach { node, rawNode in
         if let skinIndex = rawNode.skin {
@@ -55,7 +55,7 @@ func mapNodeQuat(_ raw: [Float]?) throws -> simd_quatf? {
         return nil
     }
     if rawQuat.count != 4 {
-        throw KGLTFError.nodeDataMismatch("Unable to map node rotation - received \(rawQuat.count) components instead of 4")
+        throw KGError.nodeDataMismatch("Unable to map node rotation - received \(rawQuat.count) components instead of 4")
     }
     return simd_quatf(
         ix: rawQuat[0],
@@ -70,7 +70,7 @@ func mapNodeVec3(_ raw: [Float]?) throws -> SIMD3<Float>? {
         return nil
     }
     if rawVec.count != 3 {
-        throw KGLTFError.nodeDataMismatch("Unable to map node translation, or scale - received \(rawVec.count) components instead of 3")
+        throw KGError.nodeDataMismatch("Unable to map node translation, or scale - received \(rawVec.count) components instead of 3")
     }
     return SIMD3<Float>(rawVec)
 }

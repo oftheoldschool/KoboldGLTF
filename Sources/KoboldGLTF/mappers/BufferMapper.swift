@@ -1,10 +1,10 @@
 import Foundation
 
-func mapBuffers(_ raw: [KRawGLTFBuffer], binData: [UInt8]?) throws -> [KGLTFBuffer] {
+func mapBuffers(_ raw: [Buffer], binData: [UInt8]?) throws -> [KGBuffer] {
     return try raw.map { try mapBuffer($0, binData: binData) }
 }
 
-func mapBuffer(_ raw: KRawGLTFBuffer, binData: [UInt8]?) throws -> KGLTFBuffer {
+func mapBuffer(_ raw: Buffer, binData: [UInt8]?) throws -> KGBuffer {
     let byteLength = raw.byteLength
     
     if let uri = raw.uri {
@@ -24,19 +24,19 @@ func mapBuffer(_ raw: KRawGLTFBuffer, binData: [UInt8]?) throws -> KGLTFBuffer {
             if encoding == "base64" {
                 if let data = Data(base64Encoded: encodedData) {
                     if data.count != byteLength {
-                        throw KGLTFError.bufferURIDataLengthMismatch("base64 encoded buffer found with actual size \(data.count) and expected size \(byteLength)")
+                        throw KGError.bufferURIDataLengthMismatch("base64 encoded buffer found with actual size \(data.count) and expected size \(byteLength)")
                     }
-                    return KGLTFBuffer(data: data)
+                    return KGBuffer(data: data)
                 } else {
-                    throw KGLTFError.bufferURIDataInvalid("could not decode URI data with encoding \(encoding), expected size \(byteLength)")
+                    throw KGError.bufferURIDataInvalid("could not decode URI data with encoding \(encoding), expected size \(byteLength)")
                 }
             } else {
-                throw KGLTFError.bufferURIDataUnsupported("URI data with encoding \(encoding) is not supported")
+                throw KGError.bufferURIDataUnsupported("URI data with encoding \(encoding) is not supported")
             }
         }
     } else if let data = binData {
-        return KGLTFBuffer(data: Data(data))
+        return KGBuffer(data: Data(data))
     }
 
-    throw KGLTFError.bufferDataUnknown("Neither uri nor binary data supplied")
+    throw KGError.bufferDataUnknown("Neither uri nor binary data supplied")
 }

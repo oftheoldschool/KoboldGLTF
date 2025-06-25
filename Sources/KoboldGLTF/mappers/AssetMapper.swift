@@ -1,5 +1,5 @@
-func mapAsset(_ raw: KRawGLTFAsset) -> KGLTFAsset {
-    return KGLTFAsset(
+func mapAsset(_ raw: Asset) -> KGAsset {
+    return KGAsset(
         version: raw.version,
         minVersion: raw.minVersion,
         generator: raw.generator,

@@ -1,4 +1,4 @@
-public enum KGLTFAccessorType {
+public enum KGAccessorType {
     case scalar
     case vec2
     case vec3
@@ -8,18 +8,18 @@ public enum KGLTFAccessorType {
     case mat4
 }
 
-public protocol KGLTFAccessorCommon {
+public protocol KGAccessorCommon {
     associatedtype T: Comparable
     
-    var bufferView: KGLTFBufferView { get }
-    var type: KGLTFAccessorType { get }
+    var bufferView: KGBufferView { get }
+    var type: KGAccessorType { get }
     var count: Int { get }
     var min: [T]? { get }
     var max: [T]? { get }
     static var sizeBytes: Int { get }
 }
 
-public extension KGLTFAccessorCommon {
+public extension KGAccessorCommon {
     func toArray() -> [[T]] {
         let data = bufferView.buffer.data
         let dataStart = bufferView.byteOffset
@@ -50,65 +50,65 @@ public extension KGLTFAccessorCommon {
     }
 }
 
-public struct KGLTFAccessorByte: KGLTFAccessorCommon {
-    public let bufferView: KGLTFBufferView
-    public let type: KGLTFAccessorType
+public struct KGAccessorByte: KGAccessorCommon {
+    public let bufferView: KGBufferView
+    public let type: KGAccessorType
     public let count: Int
     public let min: [Int8]?
     public let max: [Int8]?
     public static let sizeBytes: Int = 1
 }
 
-public struct KGLTFAccessorUByte: KGLTFAccessorCommon {
-    public let bufferView: KGLTFBufferView
-    public let type: KGLTFAccessorType
+public struct KGAccessorUByte: KGAccessorCommon {
+    public let bufferView: KGBufferView
+    public let type: KGAccessorType
     public let count: Int
     public let min: [UInt8]?
     public let max: [UInt8]?
     public static let sizeBytes: Int = 1
 }
 
-public struct KGLTFAccessorShort: KGLTFAccessorCommon {
-    public let bufferView: KGLTFBufferView
-    public let type: KGLTFAccessorType
+public struct KGAccessorShort: KGAccessorCommon {
+    public let bufferView: KGBufferView
+    public let type: KGAccessorType
     public let count: Int
     public let min: [Int16]?
     public let max: [Int16]?
     public static let sizeBytes: Int = 2
 }
 
-public struct KGLTFAccessorUShort: KGLTFAccessorCommon {
-    public let bufferView: KGLTFBufferView
-    public let type: KGLTFAccessorType
+public struct KGAccessorUShort: KGAccessorCommon {
+    public let bufferView: KGBufferView
+    public let type: KGAccessorType
     public let count: Int
     public let min: [UInt16]?
     public let max: [UInt16]?
     public static let sizeBytes: Int = 2
 }
 
-public struct KGLTFAccessorUInt: KGLTFAccessorCommon {
-    public let bufferView: KGLTFBufferView
-    public let type: KGLTFAccessorType
+public struct KGAccessorUInt: KGAccessorCommon {
+    public let bufferView: KGBufferView
+    public let type: KGAccessorType
     public let count: Int
     public let min: [UInt32]?
     public let max: [UInt32]?
     public static let sizeBytes: Int = 4
 }
 
-public struct KGLTFAccessorFloat: KGLTFAccessorCommon {
-    public let bufferView: KGLTFBufferView
-    public let type: KGLTFAccessorType
+public struct KGAccessorFloat: KGAccessorCommon {
+    public let bufferView: KGBufferView
+    public let type: KGAccessorType
     public let count: Int
     public let min: [Float]?
     public let max: [Float]?
     public static let sizeBytes: Int = 4
 }
 
-public enum KGLTFAccessor {
-    case byte(KGLTFAccessorByte)
-    case ubyte(KGLTFAccessorUByte)
-    case short(KGLTFAccessorShort)
-    case ushort(KGLTFAccessorUShort)
-    case uint(KGLTFAccessorUInt)
-    case float(KGLTFAccessorFloat)
+public enum KGAccessor {
+    case byte(KGAccessorByte)
+    case ubyte(KGAccessorUByte)
+    case short(KGAccessorShort)
+    case ushort(KGAccessorUShort)
+    case uint(KGAccessorUInt)
+    case float(KGAccessorFloat)
 }

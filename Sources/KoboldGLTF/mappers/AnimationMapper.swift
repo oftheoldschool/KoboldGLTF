@@ -1,8 +1,8 @@
 func mapAnimations(
-    _ raw: [KRawGLTFAnimation],
-    accessors: [KGLTFAccessor],
-    nodes: [KGLTFNode]
-) -> [KGLTFAnimation] {
+    _ raw: [Animation],
+    accessors: [KGAccessor],
+    nodes: [KGNode]
+) -> [KGAnimation] {
     return raw.map { 
         mapAnimation(
             $0, 
@@ -12,10 +12,10 @@ func mapAnimations(
 }
 
 func mapAnimation(
-    _ raw: KRawGLTFAnimation,
-    accessors: [KGLTFAccessor],
-    nodes: [KGLTFNode]
-) -> KGLTFAnimation {
+    _ raw: Animation,
+    accessors: [KGAccessor],
+    nodes: [KGNode]
+) -> KGAnimation {
     let samplers = mapAnimationSamplers(
         raw.samplers,
         accessors: accessors)
@@ -23,19 +23,19 @@ func mapAnimation(
         raw.channels,
         samplers: samplers,
         nodes: nodes)
-    return KGLTFAnimation(
+    return KGAnimation(
         name: raw.name, 
         channels: channels, 
         samplers: samplers)
 }
 
 func mapAnimationChannels(
-    _ raw: [KRawGLTFAnimationChannel],
-    samplers: [KGLTFAnimationSampler],
-    nodes: [KGLTFNode]
-) -> [KGLTFAnimationChannel] {
+    _ raw: [AnimationChannel],
+    samplers: [KGAnimationSampler],
+    nodes: [KGNode]
+) -> [KGAnimationChannel] {
     return raw.map { rawChannel in
-        KGLTFAnimationChannel(
+        KGAnimationChannel(
             sampler: samplers[rawChannel.sampler], 
             target: mapAnimationChannelTarget(
                 rawChannel.target,
@@ -44,17 +44,17 @@ func mapAnimationChannels(
 }
 
 func mapAnimationChannelTarget(
-    _ raw: KRawGLTFAnimationChannelTarget,
-    nodes: [KGLTFNode]
-) -> KGLTFAnimationChannelTarget {
-    return KGLTFAnimationChannelTarget(
+    _ raw: AnimationChannelTarget,
+    nodes: [KGNode]
+) -> KGAnimationChannelTarget {
+    return KGAnimationChannelTarget(
         node: nodes[raw.node], 
         path: mapAnimationChannelTargetPath(raw.path))
 }
 
 func mapAnimationChannelTargetPath(
-    _ raw: KRawGLTFAnimationChannelTargetPath
-) -> KGLTFAnimationChannelTargetPath {
+    _ raw: AnimationChannelTargetPath
+) -> KGAnimationChannelTargetPath {
     switch raw {
     case .translation: return .translation
     case .rotation: return .rotation
@@ -63,11 +63,11 @@ func mapAnimationChannelTargetPath(
 }
 
 func mapAnimationSamplers(
-    _ raw: [KRawGLTFAnimationSampler],
-    accessors: [KGLTFAccessor]
-) -> [KGLTFAnimationSampler] {
+    _ raw: [AnimationSampler],
+    accessors: [KGAccessor]
+) -> [KGAnimationSampler] {
     return raw.map { rawSampler in
-        return KGLTFAnimationSampler(
+        return KGAnimationSampler(
             interpolation: mapAnimationSamplerInterpolation(rawSampler.interpolation), 
             input: accessors[rawSampler.input], 
             output: accessors[rawSampler.output])
@@ -75,8 +75,8 @@ func mapAnimationSamplers(
 }
 
 func mapAnimationSamplerInterpolation(
-    _ raw: KRawGLTFAnimationSamplerInterpolation
-) -> KGLTFAnimationSamplerInterpolation {
+    _ raw: AnimationSamplerInterpolation
+) -> KGAnimationSamplerInterpolation {
     switch raw {
     case .linear: return .linear
     case .step: return .step

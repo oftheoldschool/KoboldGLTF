@@ -1,14 +1,14 @@
 import Foundation
 import simd
 
-public struct KGLTFAsset {
+public struct KGAsset {
     public let version: String
     public let minVersion: String?
     public let generator: String?
     public let copyright: String?
 }
 
-public class KGLTFBuffer {
+public class KGBuffer {
     public let data: Data
     
     init(data: Data) {
@@ -16,13 +16,13 @@ public class KGLTFBuffer {
     }
 }
 
-public class KGLTFBufferView {
-    public let buffer: KGLTFBuffer
+public class KGBufferView {
+    public let buffer: KGBuffer
     public let byteLength: Int
     public let byteOffset: Int
     
     init(
-        buffer: KGLTFBuffer,
+        buffer: KGBuffer,
         byteLength: Int,
         byteOffset: Int
     ) {
@@ -32,7 +32,7 @@ public class KGLTFBufferView {
     }
 }
 
-public enum KGLTFComponentType {
+public enum KGComponentType {
     case byte
     case ubyte
     case short
@@ -41,13 +41,13 @@ public enum KGLTFComponentType {
     case float
 }
 
-public class KGLTFNode {
+public class KGNode {
     public let id: Int
     public let name: String
-    public let mesh: KGLTFMesh?
-    public var skin: KGLTFSkin?
-    public var parent: KGLTFNode?
-    public var children: [KGLTFNode]?
+    public let mesh: KGMesh?
+    public var skin: KGSkin?
+    public var parent: KGNode?
+    public var children: [KGNode]?
     public let rotation: simd_quatf?
     public let translation: SIMD3<Float>?
     public let scale: SIMD3<Float>?
@@ -55,10 +55,10 @@ public class KGLTFNode {
     init(
         id: Int,
         name: String,
-        mesh: KGLTFMesh?,
-        skin: KGLTFSkin?,
-        parent: KGLTFNode?,
-        children: [KGLTFNode]?,
+        mesh: KGMesh?,
+        skin: KGSkin?,
+        parent: KGNode?,
+        children: [KGNode]?,
         rotation: simd_quatf?,
         translation: SIMD3<Float>?,
         scale: SIMD3<Float>?
@@ -75,23 +75,23 @@ public class KGLTFNode {
     }
 }
 
-public class KGLTFScene {
+public class KGScene {
     public let name: String
-    public let nodes: [KGLTFNode]
+    public let nodes: [KGNode]
     
-    init(name: String, nodes: [KGLTFNode]) {
+    init(name: String, nodes: [KGNode]) {
         self.name = name
         self.nodes = nodes
     }
 }
 
-public class KGLTFSampler {
-    public enum KGLTFSamplerMagFilter: Decodable {
+public class KGSampler {
+    public enum KGSamplerMagFilter: Decodable {
         case nearest
         case linear
     }
     
-    public enum KGLTFSamplerMinFilter: Decodable {
+    public enum KGSamplerMinFilter: Decodable {
         case nearest
         case linear
         case nearestMipMapNearest
@@ -100,22 +100,22 @@ public class KGLTFSampler {
         case linearMipMapLinear
     }
     
-    public enum KGLTFSamplerWrap: Decodable {
+    public enum KGSamplerWrap: Decodable {
         case clampToEdge
         case mirroredRepeat
         case standardRepeat
     }
 
-    public let minFilter: KGLTFSamplerMinFilter?
-    public let magFilter: KGLTFSamplerMagFilter?
-    public let wrapS: KGLTFSamplerWrap?
-    public let wrapT: KGLTFSamplerWrap?
+    public let minFilter: KGSamplerMinFilter?
+    public let magFilter: KGSamplerMagFilter?
+    public let wrapS: KGSamplerWrap?
+    public let wrapT: KGSamplerWrap?
     
     init(
-        minFilter: KGLTFSamplerMinFilter?,
-        magFilter: KGLTFSamplerMagFilter?,
-        wrapS: KGLTFSamplerWrap?,
-        wrapT: KGLTFSamplerWrap?
+        minFilter: KGSamplerMinFilter?,
+        magFilter: KGSamplerMagFilter?,
+        wrapS: KGSamplerWrap?,
+        wrapT: KGSamplerWrap?
     ) {
         self.minFilter = minFilter
         self.magFilter = magFilter
@@ -124,14 +124,14 @@ public class KGLTFSampler {
     }
 }
 
-public class KGLTFImage {
+public class KGImage {
     public let name: String
-    public let bufferView: KGLTFBufferView
+    public let bufferView: KGBufferView
     public let mimeType: String
     
     init(
         name: String,
-        bufferView: KGLTFBufferView,
+        bufferView: KGBufferView,
         mimeType: String
     ) {
         self.name = name
@@ -140,25 +140,25 @@ public class KGLTFImage {
     }
 }
 
-public struct KGLTFTextureInfo {
-    public let texture: KGLTFTexture
+public struct KGTextureInfo {
+    public let texture: KGTexture
 }
 
-public class KGLTFMaterial {
-    public struct KGLTFPBRMetallicRoughness {
+public class KGMaterial {
+    public struct KGPBRMetallicRoughness {
         public let metallicFactor: Float?
         public let roughnessFactor: Float?
-        public let baseColorTexture: KGLTFTextureInfo?
+        public let baseColorTexture: KGTextureInfo?
     }
     
     public let name: String
     public let doubleSided: Bool
-    public let pbrMetallicRoughness: KGLTFPBRMetallicRoughness?
+    public let pbrMetallicRoughness: KGPBRMetallicRoughness?
     
     init(
         name: String,
         doubleSided: Bool,
-        pbrMetallicRoughness: KGLTFPBRMetallicRoughness?
+        pbrMetallicRoughness: KGPBRMetallicRoughness?
     ) {
         self.name = name
         self.doubleSided = doubleSided
@@ -166,48 +166,48 @@ public class KGLTFMaterial {
     }
 }
 
-public struct KGLTFTexture {
-    public let sampler: KGLTFSampler
-    public let source: KGLTFImage
+public struct KGTexture {
+    public let sampler: KGSampler
+    public let source: KGImage
 }
 
-public struct KGLTFSkin {
+public struct KGSkin {
     public let name: String
-    public let inverseBindMatrices: KGLTFAccessor
-    public let joints: [KGLTFNode]
+    public let inverseBindMatrices: KGAccessor
+    public let joints: [KGNode]
 }
 
-public enum KGLTFAnimationChannelTargetPath {
+public enum KGAnimationChannelTargetPath {
     case translation
     case rotation
     case scale
 }
 
-public struct KGLTFAnimationChannelTarget {
-    public let node: KGLTFNode
-    public let path: KGLTFAnimationChannelTargetPath
+public struct KGAnimationChannelTarget {
+    public let node: KGNode
+    public let path: KGAnimationChannelTargetPath
 }
 
-public struct KGLTFAnimationChannel {
-    public let sampler: KGLTFAnimationSampler
-    public let target: KGLTFAnimationChannelTarget
+public struct KGAnimationChannel {
+    public let sampler: KGAnimationSampler
+    public let target: KGAnimationChannelTarget
 }
 
-public enum KGLTFAnimationSamplerInterpolation {
+public enum KGAnimationSamplerInterpolation {
     case linear
     case step
     case cubicSpline
 }
 
-public class KGLTFAnimationSampler {
-    public let interpolation: KGLTFAnimationSamplerInterpolation
-    public let input: KGLTFAccessor
-    public let output: KGLTFAccessor
+public class KGAnimationSampler {
+    public let interpolation: KGAnimationSamplerInterpolation
+    public let input: KGAccessor
+    public let output: KGAccessor
     
     init(
-        interpolation: KGLTFAnimationSamplerInterpolation,
-        input: KGLTFAccessor,
-        output: KGLTFAccessor
+        interpolation: KGAnimationSamplerInterpolation,
+        input: KGAccessor,
+        output: KGAccessor
     ) {
         self.interpolation = interpolation
         self.input = input
@@ -215,13 +215,13 @@ public class KGLTFAnimationSampler {
     }
 }
 
-public struct KGLTFAnimation {
+public struct KGAnimation {
     public let name: String
-    public let channels: [KGLTFAnimationChannel]
-    public let samplers: [KGLTFAnimationSampler]
+    public let channels: [KGAnimationChannel]
+    public let samplers: [KGAnimationSampler]
 }
 
-public enum KGLTFAttributeType {
+public enum KGAttributeType {
     case position
     case normal
     case tangent
@@ -245,21 +245,21 @@ public enum KGLTFAttributeType {
     }
 }
 
-public struct KGLTFMesh {
-    public struct KGLTFMeshPrimitive {
-        public let indices: KGLTFAccessor
-        public let material: KGLTFMaterial
-        public let attributes: [KGLTFAttributeType: KGLTFAccessor]
+public struct KGMesh {
+    public struct KGMeshPrimitive {
+        public let indices: KGAccessor
+        public let material: KGMaterial
+        public let attributes: [KGAttributeType: KGAccessor]
     }
     
     public let name: String
-    public let primitives: [KGLTFMeshPrimitive]
+    public let primitives: [KGMeshPrimitive]
 }
 
-extension KGLTFAttributeType: Hashable, Equatable, Comparable {
+extension KGAttributeType: Hashable, Equatable, Comparable {
     public static func == (
-        lhs: KGLTFAttributeType, 
-        rhs: KGLTFAttributeType
+        lhs: KGAttributeType, 
+        rhs: KGAttributeType
     ) -> Bool {
         switch (lhs, rhs) {
         case (.position, .position), (.normal, .normal), (.tangent, .tangent):
@@ -274,7 +274,7 @@ extension KGLTFAttributeType: Hashable, Equatable, Comparable {
         }
     }
    
-    public static func < (lhs: KGLTFAttributeType, rhs: KGLTFAttributeType) -> Bool {
+    public static func < (lhs: KGAttributeType, rhs: KGAttributeType) -> Bool {
         switch (lhs, rhs) {
         case (.texCoord(let ia), .texCoord(let ib)),
             (.weights(let ia), .weights(let ib)),
@@ -287,19 +287,19 @@ extension KGLTFAttributeType: Hashable, Equatable, Comparable {
     }
 }
 
-public struct KGLTFFile {
-    public let asset: KGLTFAsset
-    public let buffers: [KGLTFBuffer]
-    public let bufferViews: [KGLTFBufferView]
-    public let accessors: [KGLTFAccessor]
-    public let nodes: [KGLTFNode]
-    public let scenes: [KGLTFScene]
-    public let scene: KGLTFScene
-    public let samplers: [KGLTFSampler]
-    public let images: [KGLTFImage]
-    public let textures: [KGLTFTexture]
-    public let materials: [KGLTFMaterial]
-    public let skins: [KGLTFSkin]
-    public let meshes: [KGLTFMesh]
-    public let animations: [KGLTFAnimation]
+public struct KGFile {
+    public let asset: KGAsset
+    public let buffers: [KGBuffer]
+    public let bufferViews: [KGBufferView]
+    public let accessors: [KGAccessor]
+    public let nodes: [KGNode]
+    public let scenes: [KGScene]
+    public let scene: KGScene
+    public let samplers: [KGSampler]
+    public let images: [KGImage]
+    public let textures: [KGTexture]
+    public let materials: [KGMaterial]
+    public let skins: [KGSkin]
+    public let meshes: [KGMesh]
+    public let animations: [KGAnimation]
 }
