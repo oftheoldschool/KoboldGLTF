@@ -1,6 +1,6 @@
 import simd
 
-func mapNodes(_ raw: [Node], meshes: [KGMesh]) throws -> [KGNode] {
+func mapNodes(_ raw: [Node], meshes: [KGLTFMesh]) throws -> [KGLTFNode] {
     let mappedNodes = try raw.enumerated().map { index, rawNode in
         try mapNode(rawNode, id: index, meshes: meshes)
     }
@@ -21,12 +21,12 @@ func mapNodes(_ raw: [Node], meshes: [KGMesh]) throws -> [KGNode] {
     return nodes
 }
 
-func mapNode(_ raw: Node, id: Int, meshes: [KGMesh]) throws -> KGNode {
-    var mesh: KGMesh?
+func mapNode(_ raw: Node, id: Int, meshes: [KGLTFMesh]) throws -> KGLTFNode {
+    var mesh: KGLTFMesh?
     if let meshIndex = raw.mesh {
         mesh = meshes[meshIndex]
     }
-    return KGNode(
+    return KGLTFNode(
         id: id,
         name: raw.name,
         mesh: mesh,
@@ -39,9 +39,9 @@ func mapNode(_ raw: Node, id: Int, meshes: [KGMesh]) throws -> KGNode {
 }
 
 func updateNodesWithSkin(
-    nodes: [KGNode], 
+    nodes: [KGLTFNode], 
     rawNodes: [Node],
-    skins: [KGSkin]
+    skins: [KGLTFSkin]
 ) {
     zip(nodes, rawNodes).forEach { node, rawNode in
         if let skinIndex = rawNode.skin {
@@ -55,7 +55,7 @@ func mapNodeQuat(_ raw: [Float]?) throws -> simd_quatf? {
         return nil
     }
     if rawQuat.count != 4 {
-        throw KGError.nodeDataMismatch("Unable to map node rotation - received \(rawQuat.count) components instead of 4")
+        throw KGLTFError.nodeDataMismatch("Unable to map node rotation - received \(rawQuat.count) components instead of 4")
     }
     return simd_quatf(
         ix: rawQuat[0],
@@ -70,7 +70,7 @@ func mapNodeVec3(_ raw: [Float]?) throws -> SIMD3<Float>? {
         return nil
     }
     if rawVec.count != 3 {
-        throw KGError.nodeDataMismatch("Unable to map node translation, or scale - received \(rawVec.count) components instead of 3")
+        throw KGLTFError.nodeDataMismatch("Unable to map node translation, or scale - received \(rawVec.count) components instead of 3")
     }
     return SIMD3<Float>(rawVec)
 }

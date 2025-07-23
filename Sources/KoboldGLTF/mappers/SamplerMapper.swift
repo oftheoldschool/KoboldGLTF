@@ -1,16 +1,16 @@
-func mapSamplers(_ raw: [Sampler]) -> [KGSampler] {
+func mapSamplers(_ raw: [Sampler]) -> [KGLTFSampler] {
     return raw.map(mapSampler)
 } 
 
-func mapSampler(_ raw: Sampler) -> KGSampler {
-    return KGSampler(
+func mapSampler(_ raw: Sampler) -> KGLTFSampler {
+    return KGLTFSampler(
         minFilter: mapSamplerMinFilter(raw.minFilter), 
         magFilter: mapSamplerMagFilter(raw.magFilter), 
         wrapS: mapSamplerWrap(raw.wrapS), 
         wrapT: mapSamplerWrap(raw.wrapT))
 }
 
-func mapSamplerWrap(_ raw: Sampler.SamplerWrap?) -> KGSampler.KGSamplerWrap? {
+func mapSamplerWrap(_ raw: Sampler.SamplerWrap?) -> KGLTFSampler.KGLTFSamplerWrap? {
     guard let wrap = raw else {
         return nil
     }
@@ -21,7 +21,7 @@ func mapSamplerWrap(_ raw: Sampler.SamplerWrap?) -> KGSampler.KGSamplerWrap? {
     }
 }
 
-func mapSamplerMinFilter(_ raw: Sampler.SamplerMinFilter?) -> KGSampler.KGSamplerMinFilter? {
+func mapSamplerMinFilter(_ raw: Sampler.SamplerMinFilter?) -> KGLTFSampler.KGLTFSamplerMinFilter? {
     guard let minFilter = raw else {
         return nil
     }
@@ -35,7 +35,7 @@ func mapSamplerMinFilter(_ raw: Sampler.SamplerMinFilter?) -> KGSampler.KGSample
     }
 }
 
-func mapSamplerMagFilter(_ raw: Sampler.SamplerMagFilter?) -> KGSampler.KGSamplerMagFilter? {
+func mapSamplerMagFilter(_ raw: Sampler.SamplerMagFilter?) -> KGLTFSampler.KGLTFSamplerMagFilter? {
     guard let magFilter = raw else {
         return nil
     }

@@ -1,10 +1,10 @@
 import Foundation
 
-func mapBuffers(_ raw: [Buffer], binData: [UInt8]?) throws -> [KGBuffer] {
+func mapBuffers(_ raw: [Buffer], binData: [UInt8]?) throws -> [KGLTFBuffer] {
     return try raw.map { try mapBuffer($0, binData: binData) }
 }
 
-func mapBuffer(_ raw: Buffer, binData: [UInt8]?) throws -> KGBuffer {
+func mapBuffer(_ raw: Buffer, binData: [UInt8]?) throws -> KGLTFBuffer {
     let byteLength = raw.byteLength
     
     if let uri = raw.uri {
@@ -24,19 +24,19 @@ func mapBuffer(_ raw: Buffer, binData: [UInt8]?) throws -> KGBuffer {
             if encoding == "base64" {
                 if let data = Data(base64Encoded: encodedData) {
                     if data.count != byteLength {
-                        throw KGError.bufferURIDataLengthMismatch("base64 encoded buffer found with actual size \(data.count) and expected size \(byteLength)")
+                        throw KGLTFError.bufferURIDataLengthMismatch("base64 encoded buffer found with actual size \(data.count) and expected size \(byteLength)")
                     }
-                    return KGBuffer(data: data)
+                    return KGLTFBuffer(data: data)
                 } else {
-                    throw KGError.bufferURIDataInvalid("could not decode URI data with encoding \(encoding), expected size \(byteLength)")
+                    throw KGLTFError.bufferURIDataInvalid("could not decode URI data with encoding \(encoding), expected size \(byteLength)")
                 }
             } else {
-                throw KGError.bufferURIDataUnsupported("URI data with encoding \(encoding) is not supported")
+                throw KGLTFError.bufferURIDataUnsupported("URI data with encoding \(encoding) is not supported")
             }
         }
     } else if let data = binData {
-        return KGBuffer(data: Data(data))
+        return KGLTFBuffer(data: Data(data))
     }
 
-    throw KGError.bufferDataUnknown("Neither uri nor binary data supplied")
+    throw KGLTFError.bufferDataUnknown("Neither uri nor binary data supplied")
 }

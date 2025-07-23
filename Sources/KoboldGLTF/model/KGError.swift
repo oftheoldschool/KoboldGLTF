@@ -1,4 +1,4 @@
-public enum KGError: Error {
+public enum KGLTFError: Error {
     case filenameNotSupported(String)
     case fileNotFound(String)
     case fileNotReadable(String)

@@ -1,13 +1,13 @@
 func mapAccessors(
     _ raw: [Accessor],
-    bufferViews: [KGBufferView]
-) -> [KGAccessor] {
+    bufferViews: [KGLTFBufferView]
+) -> [KGLTFAccessor] {
     return raw.compactMap { rawAccessor in
         return mapAccessor(rawAccessor, bufferViews: bufferViews)
     }
 }
 
-func mapComponentType(_ raw: ComponentType) -> KGComponentType {
+func mapComponentType(_ raw: ComponentType) -> KGLTFComponentType {
     switch raw {
     case .byte: return .byte
     case .ubyte: return .ubyte
@@ -18,7 +18,7 @@ func mapComponentType(_ raw: ComponentType) -> KGComponentType {
     }
 }
 
-func mapAccessorType(_ raw: AccessorType) -> KGAccessorType {
+func mapAccessorType(_ raw: AccessorType) -> KGLTFAccessorType {
     switch raw {
     case .scalar: return .scalar
     case .vec2: return .vec2
@@ -32,12 +32,12 @@ func mapAccessorType(_ raw: AccessorType) -> KGAccessorType {
 
 func mapAccessor(
     _ raw: Accessor,
-    bufferViews: [KGBufferView]
-) -> KGAccessor {
+    bufferViews: [KGLTFBufferView]
+) -> KGLTFAccessor {
     switch raw {
     case .byte(let rawAccessor):
         return .byte(
-            KGAccessorByte(
+            KGLTFAccessorByte(
                 bufferView: bufferViews[rawAccessor.bufferView], 
                 type: mapAccessorType(rawAccessor.type), 
                 count: rawAccessor.count, 
@@ -45,7 +45,7 @@ func mapAccessor(
                 max: rawAccessor.max))
     case .ubyte(let rawAccessor):
         return .ubyte(
-            KGAccessorUByte(
+            KGLTFAccessorUByte(
                 bufferView: bufferViews[rawAccessor.bufferView],
                 type: mapAccessorType(rawAccessor.type), 
                 count: rawAccessor.count, 
@@ -53,7 +53,7 @@ func mapAccessor(
                 max: rawAccessor.max))
     case .short(let rawAccessor):
         return .short(
-            KGAccessorShort(
+            KGLTFAccessorShort(
                 bufferView: bufferViews[rawAccessor.bufferView], 
                 type: mapAccessorType(rawAccessor.type), 
                 count: rawAccessor.count, 
@@ -61,7 +61,7 @@ func mapAccessor(
                 max: rawAccessor.max))
     case .ushort(let rawAccessor):
         return .ushort(
-            KGAccessorUShort(
+            KGLTFAccessorUShort(
                 bufferView: bufferViews[rawAccessor.bufferView],
                 type: mapAccessorType(rawAccessor.type), 
                 count: rawAccessor.count, 
@@ -69,7 +69,7 @@ func mapAccessor(
                 max: rawAccessor.max))
     case .uint(let rawAccessor):
         return .uint(
-            KGAccessorUInt(
+            KGLTFAccessorUInt(
                 bufferView: bufferViews[rawAccessor.bufferView],
                 type: mapAccessorType(rawAccessor.type), 
                 count: rawAccessor.count, 
@@ -77,7 +77,7 @@ func mapAccessor(
                 max: rawAccessor.max))
     case .float(let rawAccessor):
         return .float(
-            KGAccessorFloat(
+            KGLTFAccessorFloat(
                 bufferView: bufferViews[rawAccessor.bufferView], 
                 type: mapAccessorType(rawAccessor.type), 
                 count: rawAccessor.count, 

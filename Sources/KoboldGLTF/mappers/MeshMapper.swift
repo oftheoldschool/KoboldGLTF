@@ -1,8 +1,8 @@
 func mapMeshes(
     _ raw: [Mesh],
-    accessors: [KGAccessor],
-    materials: [KGMaterial]
-) throws -> [KGMesh] {
+    accessors: [KGLTFAccessor],
+    materials: [KGLTFMaterial]
+) throws -> [KGLTFMesh] {
     return try raw.map { 
         try mapMesh(
             $0,
@@ -13,10 +13,10 @@ func mapMeshes(
 
 func mapMesh(
     _ raw: Mesh,
-    accessors: [KGAccessor],
-    materials: [KGMaterial]
-) throws -> KGMesh {
-    return KGMesh(
+    accessors: [KGLTFAccessor],
+    materials: [KGLTFMaterial]
+) throws -> KGLTFMesh {
+    return KGLTFMesh(
         name: raw.name, 
         primitives: try mapPrimitives(
             raw.primitives, 
@@ -26,11 +26,11 @@ func mapMesh(
 
 func mapPrimitives(
     _ raw: [MeshPrimitive],
-    accessors: [KGAccessor],
-    materials: [KGMaterial]
-) throws -> [KGMesh.KGMeshPrimitive] {
+    accessors: [KGLTFAccessor],
+    materials: [KGLTFMaterial]
+) throws -> [KGLTFMesh.KGLTFMeshPrimitive] {
     return try raw.map { 
-        KGMesh.KGMeshPrimitive(
+        KGLTFMesh.KGLTFMeshPrimitive(
             indices: accessors[$0.indices], 
             material: materials[$0.material], 
             attributes: try mapPrimitiveAttributes(
@@ -41,8 +41,8 @@ func mapPrimitives(
 
 func mapPrimitiveAttributes(
     _ raw: [String: Int],
-    accessors: [KGAccessor]
-) throws -> [KGAttributeType: KGAccessor] {
+    accessors: [KGLTFAccessor]
+) throws -> [KGLTFAttributeType: KGLTFAccessor] {
     return Dictionary(
         uniqueKeysWithValues: 
             try raw.map { (k, v) in 
@@ -50,7 +50,7 @@ func mapPrimitiveAttributes(
             })
 } 
 
-func mapAttributeType(_ raw: String) throws -> KGAttributeType {
+func mapAttributeType(_ raw: String) throws -> KGLTFAttributeType {
     switch raw {
     case "POSITION": return .position
     case "NORMAL": return .normal
@@ -69,5 +69,5 @@ func mapAttributeType(_ raw: String) throws -> KGAttributeType {
             }
         }
     }
-    throw KGError.attributeTypeUnknown(raw)
+    throw KGLTFError.attributeTypeUnknown(raw)
 }

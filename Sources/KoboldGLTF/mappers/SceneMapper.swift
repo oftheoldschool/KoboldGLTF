@@ -1,9 +1,9 @@
-func mapScenes(_ raw: [Scene], nodes: [KGNode]) -> [KGScene] {
+func mapScenes(_ raw: [Scene], nodes: [KGLTFNode]) -> [KGLTFScene] {
     return raw.map { mapScene($0, nodes: nodes) }
 }
 
-func mapScene(_ raw: Scene, nodes: [KGNode]) -> KGScene {
-    return KGScene(
+func mapScene(_ raw: Scene, nodes: [KGLTFNode]) -> KGLTFScene {
+    return KGLTFScene(
         name: raw.name, 
         nodes: raw.nodes.map { nodes[$0] })
 } 

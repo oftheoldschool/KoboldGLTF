@@ -1,39 +1,39 @@
 import Foundation
 
-public class KGLoader {
+public class KGLTFLoader {
     public init() {
 
     }
 
-    public func loadGLTF(resource: String) throws -> KGFile {
+    public func loadGLTF(resource: String) throws -> KGLTFFile {
         if resource.hasSuffix("gltf") {
             return try loadJSON(resource: resource)
         } else if resource.hasSuffix("glb") {
             return try loadBinary(resource: resource)
         } else {
-            throw KGError.filenameNotSupported(resource)
+            throw KGLTFError.filenameNotSupported(resource)
         }
     }
 
-    private func loadJSON(resource: String) throws -> KGFile {
+    private func loadJSON(resource: String) throws -> KGLTFFile {
         let gltfPath = Bundle.main.path(forResource: resource, ofType: nil)!
         let gltfJson = try String(contentsOfFile: gltfPath, encoding: String.Encoding.utf8)
         let gltfRaw = try JSONDecoder().decode(GLTFFile.self, from: gltfJson.data(using: .utf8)!)
         return try mapGLTF(gltfRaw)
     }
 
-    private func loadBinary(resource: String) throws -> KGFile {
+    private func loadBinary(resource: String) throws -> KGLTFFile {
         guard let gltfPath = Bundle.main.url(
             forResource: resource,
             withExtension: nil
         ) else {
-            throw KGError.fileNotFound(resource)
+            throw KGLTFError.fileNotFound(resource)
         }
         let gltfData: Data
         do {
             gltfData = try Data(contentsOf: gltfPath)
         } catch {
-            throw KGError.fileNotReadable("Unable to read file due to \(error.localizedDescription)")
+            throw KGLTFError.fileNotReadable("Unable to read file due to \(error.localizedDescription)")
         }
 
         var magic: UInt32 = 0
@@ -49,7 +49,7 @@ public class KGLoader {
         let expectedMagic: UInt32 = 0x46546C67
 
         if expectedMagic != magic {
-            throw KGError.fileHeaderInvalid("Version: \(version), Length: \(length), Expected magic: \(String(expectedMagic, radix: 16)), Actual magic: \(String(magic, radix: 16))")
+            throw KGLTFError.fileHeaderInvalid("Version: \(version), Length: \(length), Expected magic: \(String(expectedMagic, radix: 16)), Actual magic: \(String(magic, radix: 16))")
         }
 
         var currentOffset: UInt32 = 12
@@ -82,7 +82,7 @@ public class KGLoader {
         return try mapGLTF(gltfRaw, binData: binData)
     }
 
-    private func mapGLTF(_ raw: GLTFFile, binData: [UInt8]? = nil) throws -> KGFile {
+    private func mapGLTF(_ raw: GLTFFile, binData: [UInt8]? = nil) throws -> KGLTFFile {
         let buffers = try mapBuffers(raw.buffers, binData: binData)
         let bufferViews = mapBufferViews(raw.bufferViews, buffers: buffers)
         let accessors = mapAccessors(raw.accessors, bufferViews: bufferViews)
@@ -93,18 +93,18 @@ public class KGLoader {
         let meshes = try mapMeshes(raw.meshes, accessors: accessors, materials: materials)
         let nodes = try mapNodes(raw.nodes, meshes: meshes)
         let scenes = mapScenes(raw.scenes, nodes: nodes)
-        var skins: [KGSkin] = []
+        var skins: [KGLTFSkin] = []
         if let rawSkins = raw.skins {
             skins = mapSkins(rawSkins, accessors: accessors, nodes: nodes)
         }
-        var animations: [KGAnimation] = []
+        var animations: [KGLTFAnimation] = []
         if let rawAnimations = raw.animations {
             animations = mapAnimations(rawAnimations, accessors: accessors, nodes: nodes)
         }
 
         updateNodesWithSkin(nodes: nodes, rawNodes: raw.nodes, skins: skins)
 
-        return KGFile(
+        return KGLTFFile(
             asset: mapAsset(raw.asset),
             buffers: buffers,
             bufferViews: bufferViews,
