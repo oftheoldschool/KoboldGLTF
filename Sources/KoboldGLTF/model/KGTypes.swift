@@ -248,7 +248,7 @@ public enum KGLTFAttributeType {
 public struct KGLTFMesh {
     public struct KGLTFMeshPrimitive {
         public let indices: KGLTFAccessor
-        public let material: KGLTFMaterial
+        public let material: KGLTFMaterial?
         public let attributes: [KGLTFAttributeType: KGLTFAccessor]
     }
     

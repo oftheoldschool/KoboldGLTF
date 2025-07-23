@@ -32,7 +32,7 @@ func mapPrimitives(
     return try raw.map { 
         KGLTFMesh.KGLTFMeshPrimitive(
             indices: accessors[$0.indices], 
-            material: materials[$0.material], 
+            material: $0.material.map { materialId in materials[materialId] }, 
             attributes: try mapPrimitiveAttributes(
                 $0.attributes, 
                 accessors: accessors))

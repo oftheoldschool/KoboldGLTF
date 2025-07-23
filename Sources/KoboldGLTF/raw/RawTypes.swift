@@ -77,7 +77,7 @@ struct Material: Decodable {
 
 struct MeshPrimitive: Decodable {
     let indices: Int
-    let material: Int
+    let material: Int?
     let attributes: [String: Int]
 }
 
