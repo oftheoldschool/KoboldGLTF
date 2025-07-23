@@ -1,7 +1,7 @@
-func mapAccessors(
+    func mapAccessors(
     _ raw: [Accessor],
     bufferViews: [KGLTFBufferView]
-) -> [KGLTFAccessor] {
+    ) -> [KGLTFAccessor] {
     return raw.compactMap { rawAccessor in
         return mapAccessor(rawAccessor, bufferViews: bufferViews)
     }

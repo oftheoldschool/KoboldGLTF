@@ -1,5 +1,5 @@
-func mapSamplers(_ raw: [Sampler]) -> [KGLTFSampler] {
-    return raw.map(mapSampler)
+func mapSamplers(_ raw: [Sampler]?) -> [KGLTFSampler] {
+    return (raw ?? []).map(mapSampler)
 } 
 
 func mapSampler(_ raw: Sampler) -> KGLTFSampler {

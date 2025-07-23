@@ -1,8 +1,8 @@
 func mapMaterials(
-    _ raw: [Material],
+    _ raw: [Material]?,
     textures: [KGLTFTexture]
 ) -> [KGLTFMaterial] {
-    return raw.map { mapMaterial($0, textures: textures) }
+    return (raw ?? []).map { mapMaterial($0, textures: textures) }
 }
 
 func mapMaterial(
@@ -33,8 +33,10 @@ func mapPbrMetallicRoughness(
 }
 
 func mapTextureInfo(
-    _ raw: TextureInfo,
+    _ raw: TextureInfo?,
     textures: [KGLTFTexture]
-) -> KGLTFTextureInfo {
-    return KGLTFTextureInfo(texture: textures[raw.index])
+) -> KGLTFTextureInfo? {
+    return raw.map {
+        KGLTFTextureInfo(texture: textures[$0.index])
+    }
 }

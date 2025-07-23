@@ -1,7 +1,7 @@
 import Foundation
 
-func mapImages(_ raw: [Image], bufferViews: [KGLTFBufferView]) -> [KGLTFImage] {
-    return raw.map { raw in mapImage(raw, bufferViews: bufferViews) }
+func mapImages(_ raw: [Image]?, bufferViews: [KGLTFBufferView]) -> [KGLTFImage] {
+    return (raw ?? []).map { raw in mapImage(raw, bufferViews: bufferViews) }
 }
 
 func hexDescription(data: Data) -> String {

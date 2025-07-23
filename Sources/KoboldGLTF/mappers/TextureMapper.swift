@@ -1,9 +1,9 @@
 func mapTextures(
-    _ raw: [Texture], 
+    _ raw: [Texture]?,
     samplers: [KGLTFSampler],
     images: [KGLTFImage]
 ) -> [KGLTFTexture] {
-    return raw.map { mapTexture($0, samplers: samplers, images: images) }
+    return (raw ?? []).map { mapTexture($0, samplers: samplers, images: images) }
 }
 
 func mapTexture(

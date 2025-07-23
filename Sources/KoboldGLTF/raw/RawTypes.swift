@@ -66,8 +66,8 @@ struct TextureInfo: Decodable {
 struct Material: Decodable {
     struct PBRMetallicRoughness: Decodable {
         let metallicFactor: Float
-        let roughnessFactor: Float
-        let baseColorTexture: TextureInfo
+        let roughnessFactor: Float?
+        let baseColorTexture: TextureInfo?
     }
 
     let name: String
@@ -147,13 +147,13 @@ struct GLTFFile: Decodable {
     let scenes: [Scene]
     let nodes: [Node]
     let animations: [Animation]?
-    let materials: [Material]
+    let materials: [Material]?
     let meshes: [Mesh]
-    let textures: [Texture]
-    let images: [Image]
+    let textures: [Texture]?
+    let images: [Image]?
     let skins: [Skin]?
     let accessors: [Accessor]
     let bufferViews: [BufferView]
-    let samplers: [Sampler]
+    let samplers: [Sampler]?
     let buffers: [Buffer]
 }
