@@ -232,21 +232,32 @@ public enum KGLTFAttributeType {
     
     public var rawValue : Int {
         get {
-            switch self {
-            case .position: return 0
-            case .normal: return 1
-            case .tangent: return 2
-            case .texCoord(n: _): return 3
-            case .color(n: _): return 4
-            case .joints(n: _): return 5
-            case .weights(n: _): return 6
+            return switch self {
+            case .position: 0
+            case .normal: 1
+            case .tangent: 2
+            case .texCoord(n: _): 3
+            case .color(n: _): 4
+            case .joints(n: _): 5
+            case .weights(n: _): 6
             }
         }
     }
 }
 
+public enum KGLTFMeshPrimitiveMode: Int {
+    case points
+    case lines
+    case lineLoop
+    case lineStrip
+    case triangles
+    case triangleStrip
+    case triangleFan
+}
+
 public struct KGLTFMesh {
     public struct KGLTFMeshPrimitive {
+        public let mode: KGLTFMeshPrimitiveMode
         public let indices: KGLTFAccessor
         public let material: KGLTFMaterial?
         public let attributes: [KGLTFAttributeType: KGLTFAccessor]

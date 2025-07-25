@@ -14,10 +14,10 @@ func mapSamplerWrap(_ raw: Sampler.SamplerWrap?) -> KGLTFSampler.KGLTFSamplerWra
     guard let wrap = raw else {
         return nil
     }
-    switch wrap {
-    case .standardRepeat: return .standardRepeat
-    case .mirroredRepeat: return .mirroredRepeat
-    case .clampToEdge: return .clampToEdge
+    return switch wrap {
+    case .standardRepeat: .standardRepeat
+    case .mirroredRepeat: .mirroredRepeat
+    case .clampToEdge: .clampToEdge
     }
 }
 
@@ -25,13 +25,13 @@ func mapSamplerMinFilter(_ raw: Sampler.SamplerMinFilter?) -> KGLTFSampler.KGLTF
     guard let minFilter = raw else {
         return nil
     }
-    switch minFilter {
-    case .nearest: return .nearest
-    case .linear: return .linear
-    case .nearestMipMapNearest: return .nearestMipMapNearest
-    case .linearMipMapNearest: return .linearMipMapNearest
-    case .nearestMipMapLinear: return .nearestMipMapLinear
-    case .linearMipMapLinear: return .linearMipMapLinear
+    return switch minFilter {
+    case .nearest: .nearest
+    case .linear: .linear
+    case .nearestMipMapNearest: .nearestMipMapNearest
+    case .linearMipMapNearest: .linearMipMapNearest
+    case .nearestMipMapLinear: .nearestMipMapLinear
+    case .linearMipMapLinear: .linearMipMapLinear
     }
 }
 
@@ -39,8 +39,8 @@ func mapSamplerMagFilter(_ raw: Sampler.SamplerMagFilter?) -> KGLTFSampler.KGLTF
     guard let magFilter = raw else {
         return nil
     }
-    switch magFilter {
-    case .nearest: return .nearest
-    case .linear: return .linear
+    return switch magFilter {
+    case .nearest: .nearest
+    case .linear: .linear
     }
 }

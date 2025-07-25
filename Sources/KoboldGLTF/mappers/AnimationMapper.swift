@@ -55,10 +55,10 @@ func mapAnimationChannelTarget(
 func mapAnimationChannelTargetPath(
     _ raw: AnimationChannelTargetPath
 ) -> KGLTFAnimationChannelTargetPath {
-    switch raw {
-    case .translation: return .translation
-    case .rotation: return .rotation
-    case .scale: return .scale
+    return switch raw {
+    case .translation: .translation
+    case .rotation: .rotation
+    case .scale: .scale
     }
 }
 
@@ -77,9 +77,9 @@ func mapAnimationSamplers(
 func mapAnimationSamplerInterpolation(
     _ raw: AnimationSamplerInterpolation
 ) -> KGLTFAnimationSamplerInterpolation {
-    switch raw {
-    case .linear: return .linear
-    case .step: return .step
-    case .cubicSpline: return .cubicSpline
+    return switch raw {
+    case .linear: .linear
+    case .step: .step
+    case .cubicSpline: .cubicSpline
     }
 }

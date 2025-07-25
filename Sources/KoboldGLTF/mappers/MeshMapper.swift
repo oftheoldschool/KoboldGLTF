@@ -31,11 +31,24 @@ func mapPrimitives(
 ) throws -> [KGLTFMesh.KGLTFMeshPrimitive] {
     return try raw.map { 
         KGLTFMesh.KGLTFMeshPrimitive(
-            indices: accessors[$0.indices], 
+            mode: mapPrimitiveMode($0.mode ?? .triangles),
+            indices: accessors[$0.indices],
             material: $0.material.map { materialId in materials[materialId] }, 
             attributes: try mapPrimitiveAttributes(
                 $0.attributes, 
                 accessors: accessors))
+    }
+}
+
+func mapPrimitiveMode(_ raw: MeshPrimitiveMode) -> KGLTFMeshPrimitiveMode {
+    return switch raw {
+    case .points: .points
+    case .lines: .lines
+    case .lineLoop: .lineLoop
+    case .lineStrip: .lineStrip
+    case .triangles: .triangles
+    case .triangleStrip: .triangleStrip
+    case .triangleFan: .triangleFan
     }
 }
 

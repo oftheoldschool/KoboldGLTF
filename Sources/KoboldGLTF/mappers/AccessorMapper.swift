@@ -8,25 +8,25 @@
 }
 
 func mapComponentType(_ raw: ComponentType) -> KGLTFComponentType {
-    switch raw {
-    case .byte: return .byte
-    case .ubyte: return .ubyte
-    case .short: return .short
-    case .ushort: return .ushort
-    case .uint: return .uint
-    case .float: return .float
+    return switch raw {
+    case .byte: .byte
+    case .ubyte: .ubyte
+    case .short: .short
+    case .ushort: .ushort
+    case .uint: .uint
+    case .float: .float
     }
 }
 
 func mapAccessorType(_ raw: AccessorType) -> KGLTFAccessorType {
-    switch raw {
-    case .scalar: return .scalar
-    case .vec2: return .vec2
-    case .vec3: return .vec3
-    case .vec4: return .vec4
-    case .mat2: return .mat2
-    case .mat3: return .mat3
-    case .mat4: return .mat4
+    return switch raw {
+    case .scalar: .scalar
+    case .vec2: .vec2
+    case .vec3: .vec3
+    case .vec4: .vec4
+    case .mat2: .mat2
+    case .mat3: .mat3
+    case .mat4: .mat4
     }
 }
 

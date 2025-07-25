@@ -75,7 +75,18 @@ struct Material: Decodable {
     let pbrMetallicRoughness: PBRMetallicRoughness?
 }
 
+enum MeshPrimitiveMode: Int, Decodable {
+    case points = 0
+    case lines = 1
+    case lineLoop = 2
+    case lineStrip = 3
+    case triangles = 4
+    case triangleStrip = 5
+    case triangleFan = 6
+}
+
 struct MeshPrimitive: Decodable {
+    let mode: MeshPrimitiveMode?
     let indices: Int
     let material: Int?
     let attributes: [String: Int]
