@@ -5,6 +5,16 @@ public class KGLTFLoader {
 
     }
 
+    public func loadGLTF(url: URL) throws -> KGLTFFile {
+        if url.pathExtension == "gltf" {
+            return try loadJSON(url: url)
+        } else if url.pathExtension == "glb" {
+            return try loadBinary(url: url)
+        } else {
+            throw KGLTFError.filenameNotSupported(url.absoluteString)
+        }
+    }
+
     public func loadGLTF(resource: String) throws -> KGLTFFile {
         if resource.hasSuffix("gltf") {
             return try loadJSON(resource: resource)
@@ -15,11 +25,31 @@ public class KGLTFLoader {
         }
     }
 
+    private func loadJSON(url: URL) throws -> KGLTFFile {
+        let gltfJson = try String(contentsOf: url, encoding: String.Encoding.utf8)
+        return try loadJSON(gltfJson: gltfJson)
+    }
+
     private func loadJSON(resource: String) throws -> KGLTFFile {
         let gltfPath = Bundle.main.path(forResource: resource, ofType: nil)!
         let gltfJson = try String(contentsOfFile: gltfPath, encoding: String.Encoding.utf8)
+        return try loadJSON(gltfJson: gltfJson)
+    }
+
+    private func loadJSON(gltfJson: String) throws -> KGLTFFile {
         let gltfRaw = try JSONDecoder().decode(GLTFFile.self, from: gltfJson.data(using: .utf8)!)
         return try mapGLTF(gltfRaw)
+    }
+
+    private func loadBinary(url: URL) throws -> KGLTFFile {
+        let gltfData: Data
+        do {
+            gltfData = try Data(contentsOf: url)
+        } catch {
+            throw KGLTFError.fileNotReadable("Unable to read file due to \(error.localizedDescription)")
+        }
+
+        return try loadBinary(gltfData: gltfData)
     }
 
     private func loadBinary(resource: String) throws -> KGLTFFile {
@@ -36,6 +66,10 @@ public class KGLTFLoader {
             throw KGLTFError.fileNotReadable("Unable to read file due to \(error.localizedDescription)")
         }
 
+        return try loadBinary(gltfData: gltfData)
+    }
+
+    private func loadBinary(gltfData: Data) throws -> KGLTFFile {
         var magic: UInt32 = 0
         var version: UInt32 = 0
         var length: UInt32 = 0
