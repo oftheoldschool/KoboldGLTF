@@ -11,7 +11,7 @@ public class KGLTFLoader {
         } else if url.pathExtension == "glb" {
             return try loadBinary(url: url)
         } else {
-            throw KGLTFError.filenameNotSupported(url.absoluteString)
+            throw KGLTFError.filenameNotSupported(url.relativePath)
         }
     }
 
